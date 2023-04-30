@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -16,8 +17,11 @@ public class MyFrame extends JFrame {
 	private Json json;
 	private HashMap<String, Integer> a,b,d;
 	private JPanels w,ct,e;
+	private ArrayList<Plat> entreesChoisies; 
+	private ArrayList<Plat> platsChoisis; 
+	private ArrayList<Plat> dessertsChoisis; 
 	
-	private JLabel entree,plat,dessert;
+	private JLabel entrees,plat,dessert;
 	private JPanel panelSud;
 	//private ArrayList<Plat> entreesChoisies;
 
@@ -35,12 +39,16 @@ public class MyFrame extends JFrame {
 		this.ct = new JPanels("Plats", lire.ListeDesPlats(fichier));
 		this.e = new JPanels("Desserts", lire.ListeDesDesserts(fichier));
 		
-		this.entree=new JLabel();
+		this.entrees=new JLabel();
 		this.plat=new JLabel();
 		this.dessert=new JLabel();
 		this.panelSud= new JPanel();
-		//this.json= new Json(entreesChoisies);c'estw.getListPlat()
-	//	this.entreesChoisies=new ArrayList<Plat>();//C'est la liste de toutes les entrées (nom et qtt) sur lesquelles on a cliqué.
+	//C'est la liste de toutes les entrées (nom et qtt) sur lesquelles on a cliqué.
+		entreesChoisies=w.getListPlat();
+		platsChoisis=ct.getListPlat();
+		dessertsChoisis=e.getListPlat();
+		this.json= new Json(entreesChoisies,platsChoisis, dessertsChoisis);//'estw.getListPlat()
+	    
 	
 		setUp();
 	}
@@ -71,13 +79,11 @@ public class MyFrame extends JFrame {
 		pan.add(w, BorderLayout.WEST);
 		pan.add(ct, BorderLayout.CENTER);
 		pan.add(e, BorderLayout.EAST);
-		
-		w.getListPlat();
 
 		
 		//_________________________________________PARTIE SUD__________________________________________________________________
 		
-		a= recap(w,entree);//recap(JPanels w, JLabel texte)
+		a= recap(w,entrees);//recap(JPanels w, JLabel texte)
 		b= recap(ct,plat);
 		d=recap(e,dessert);
 	
@@ -88,7 +94,7 @@ public class MyFrame extends JFrame {
 				
 				JButton s = new JButton("annuler");//permet de tout annuler
 				s.addActionListener(l -> {
-					entree.setText(" ");
+					entrees.setText(" ");
 					plat.setText(" ");
 					dessert.setText(" ");
 					a.clear();
@@ -99,7 +105,9 @@ public class MyFrame extends JFrame {
 
 				JButton com= new JButton("commander");//COMMANDE
 				com.addActionListener(l ->{
-					json.genererJson();//Sur le jason qui contient l'arrayList des entreesChoisie on exécute genererJson;
+					json.genererEntree();
+					json.genererPlat();
+					json.genererDessert();//Sur le jason qui contient l'arrayList des entreesChoisie on exécute genererJson;
 					
 				});
 				panelBouton.add(s);
@@ -108,9 +116,9 @@ public class MyFrame extends JFrame {
 
 
 				panelSud.add(panelBouton, BorderLayout.CENTER);
-				boutonSupp(entree," les entrees",w);//C'est les 3 boutons pour supprimer les entrées, ou les plats ou les desserts
-				boutonSupp(plat," les plats	",ct);//Pour ça j'utilise la fonction boutonSupp définie plus loin
-				boutonSupp(dessert," les desserts",e);
+				boutonSupp(entrees," les entrees",a,entreesChoisies);//C'est les 3 boutons pour supprimer les entrées, ou les plats ou les desserts
+				boutonSupp(plat," les plats	",b,platsChoisis);//Pour ça j'utilise la fonction boutonSupp définie plus loin
+				boutonSupp(dessert," les desserts",d,dessertsChoisis);
 				
 
 			
@@ -177,21 +185,25 @@ public class MyFrame extends JFrame {
 //______________________________________________________________________________________________________________________________________
 
 
-	public void boutonSupp(JLabel entree, String nom, JPanels jpp) {//Fonction pour les 3 boutons supprimer
+	public ArrayList<Plat> boutonSupp(JLabel entree, String nom, HashMap<String, Integer> a2, ArrayList<Plat> arraylist) {//Fonction pour les 3 boutons supprimer
 		JPanel panelDeLabel = new JPanel();
 		panelDeLabel.setLayout(new BoxLayout(panelDeLabel, BoxLayout.LINE_AXIS));//permet de fixer les bouton à l'est
 	
 	JButton e = new JButton("Supprimer"+ nom);//Nom bouton
 	e.addActionListener(l -> {
-		HashMap<String, Integer> a=recap(jpp,entree);
-				a.clear();
+				a2.clear();
+				arraylist.clear();
 		entree.setText(" ");//efface le texte qu'il y a dans le JLabel ( dans le JLabel entree par ex)
-		//hashmap.clear();HashMap<String, Integer> hashmap
-		jpp.getListPlat().clear();
+		
+	
+		
+	
 	
 	});
 	e.setMaximumSize(new Dimension(170,50));
 	panelDeLabel.add(e, BorderLayout.PAGE_START);
 	panelDeLabel.add(entree, BorderLayout.CENTER);
-	panelSud.add(panelDeLabel);}
+	panelSud.add(panelDeLabel);
+	return arraylist;
+	}
 }

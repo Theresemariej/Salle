@@ -18,7 +18,7 @@ public Json(ArrayList e, ArrayList p,ArrayList d) {
 	this.CLesDesserts=d;
 }
 
-public void genererJson() {
+public void genererEntree() {
 	JSONObject jsonObj = new JSONObject();
 	JSONArray Array = new JSONArray();
 	
@@ -27,8 +27,36 @@ public void genererJson() {
 		jsonObj2.put("id", p.getId());
 		jsonObj2.put("qtt", p.getQtt());
 		Array.add(jsonObj2);
-}
-	jsonObj.put("Startres", Array);	
+}}
+	
+	
+	public void genererPlat() {
+		JSONObject jsonObj = new JSONObject();
+		JSONArray Array = new JSONArray();
+		
+		for(Plat p : CLesPlats) {
+			JSONObject jsonObj2 = new JSONObject();
+			jsonObj2.put("id", p.getId());
+			jsonObj2.put("qtt", p.getQtt());
+			Array.add(jsonObj2);
+	}}
+
+
+		
+		public void genererDessert() {
+			JSONObject jsonObj = new JSONObject();
+			JSONArray Array = new JSONArray();
+			
+			for(Plat p : CLesDesserts) {
+				JSONObject jsonObj2 = new JSONObject();
+				jsonObj2.put("id", p.getId());
+				jsonObj2.put("qtt", p.getQtt());
+				Array.add(jsonObj2);
+		}
+			jsonObj.put("desserts", Array);	
+			jsonObj.put("main_courses", Array);	
+			jsonObj.put("Startres", Array);	
+			
 
 	FileWriter file;
 	try {

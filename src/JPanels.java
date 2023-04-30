@@ -7,9 +7,9 @@ import javax.swing.border.Border;
 public class JPanels extends JPanel {
 
 	private String nom;
-	private String n1;
-	private String n2;
-	private String n3;
+//	private String n1;
+//	private String n2;
+//	private String n3;
 	private ArrayList<Plat> listeNourriture;
 	private ArrayList<Plat> listPlat;
 	private ArrayList<JButtons> listB;
