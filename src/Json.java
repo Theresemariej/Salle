@@ -7,56 +7,53 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class Json {
-	protected ArrayList<Plat> CLesEntrees;
-	protected ArrayList<Plat> CLesPlats;
-	protected ArrayList<Plat> CLesDesserts;
+	private ArrayList<Plat> CLesEntrees;
+	private ArrayList<Plat> CLesPlats;
+	private ArrayList<Plat> CLesDesserts;
+	private JSONObject jsonObj;
 
 	
-public Json(ArrayList e, ArrayList p,ArrayList d) {
+public Json(ArrayList e, ArrayList pl,ArrayList d) {
 	this.CLesEntrees = e;
-	this.CLesPlats = p;
+	this.CLesPlats = pl;
 	this.CLesDesserts=d;
+	this.jsonObj = new JSONObject();
+	
+	setUp();
 }
 
-public void genererEntree() {
-	JSONObject jsonObj = new JSONObject();
+public void setUp() {
 	JSONArray Array = new JSONArray();
 	
 	for(Plat p : CLesEntrees) {
-		JSONObject jsonObj2 = new JSONObject();
-		jsonObj2.put("id", p.getId());
-		jsonObj2.put("qtt", p.getQtt());
-		Array.add(jsonObj2);
-}}
+		JSONObject jsonObjBIS = new JSONObject();
+		jsonObjBIS.put("id", p.getId());
+		jsonObjBIS.put("qtt", p.getQtt());
+		Array.add(jsonObjBIS);
+
 	
 	
-	public void genererPlat() {
-		JSONObject jsonObj = new JSONObject();
-		JSONArray Array = new JSONArray();
+		JSONArray Array2 = new JSONArray();
 		
-		for(Plat p : CLesPlats) {
-			JSONObject jsonObj2 = new JSONObject();
-			jsonObj2.put("id", p.getId());
-			jsonObj2.put("qtt", p.getQtt());
-			Array.add(jsonObj2);
-	}}
-
-
+		for(Plat p2 : CLesPlats) {
+			JSONObject jsonObjBIS2 = new JSONObject();
+			jsonObjBIS2.put("id", p2.getId());
+			jsonObjBIS2.put("qtt", p2.getQtt());
+			Array2.add(jsonObjBIS2);
+	
 		
-		public void genererDessert() {
-			JSONObject jsonObj = new JSONObject();
-			JSONArray Array = new JSONArray();
+			JSONArray Array3 = new JSONArray();
 			
-			for(Plat p : CLesDesserts) {
-				JSONObject jsonObj2 = new JSONObject();
-				jsonObj2.put("id", p.getId());
-				jsonObj2.put("qtt", p.getQtt());
-				Array.add(jsonObj2);
+			for(Plat p3 : CLesDesserts) {
+				JSONObject jsonObjBIS3 = new JSONObject();
+				jsonObjBIS3.put("id", p3.getId());
+				jsonObjBIS3.put("qtt", p3.getQtt());
+				Array3.add(jsonObjBIS3);
 		}
-			jsonObj.put("desserts", Array);	
-			jsonObj.put("main_courses", Array);	
+				
 			jsonObj.put("Startres", Array);	
-			
+			jsonObj.put("main_courses", Array2);
+			jsonObj.put("desserts", Array3);	
 
 	FileWriter file;
 	try {
@@ -68,4 +65,4 @@ public void genererEntree() {
 		e.printStackTrace();
 	}		
 
-}}
+}}}}

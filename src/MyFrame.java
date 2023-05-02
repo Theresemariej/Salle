@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.*;
 
@@ -13,13 +14,8 @@ public class MyFrame extends JFrame {
 	private String fichier;
 	private JPanel pan;
 	private Lire lire;
-//	private JPanels jp;
-	private Json json;
-	private HashMap<String, Integer> a,b,d;
-	private JPanels w,ct,e;
-	private ArrayList<Plat> entreesChoisies; 
-	private ArrayList<Plat> platsChoisis; 
-	private ArrayList<Plat> dessertsChoisis; 
+	//	private JPanels jp;
+	private HashMap<String, Integer>a, b,d;
 	
 	private JLabel entrees,plat,dessert;
 	private JPanel panelSud;
@@ -33,27 +29,22 @@ public class MyFrame extends JFrame {
 		this.lire = new Lire();//c'est pour utiliser juste apres
 	//	this.jp=new JPanels("Entree",lire.getListeEntrees());//l'arrayList des entrees est dans lire
 		this.a= new HashMap<String, Integer>();
-		this.b= new HashMap<String, Integer>();
+		this.b= new HashMap<String,Integer>();
 		this.d= new HashMap<String, Integer>();
-		this.w = new JPanels("Entrées", lire.ListeDesEntrees(fichier));
-		this.ct = new JPanels("Plats", lire.ListeDesPlats(fichier));
-		this.e = new JPanels("Desserts", lire.ListeDesDesserts(fichier));
 		
 		this.entrees=new JLabel();
 		this.plat=new JLabel();
 		this.dessert=new JLabel();
 		this.panelSud= new JPanel();
 	//C'est la liste de toutes les entrées (nom et qtt) sur lesquelles on a cliqué.
-		entreesChoisies=w.getListPlat();
-		platsChoisis=ct.getListPlat();
-		dessertsChoisis=e.getListPlat();
-		this.json= new Json(entreesChoisies,platsChoisis, dessertsChoisis);//'estw.getListPlat()
+	
 	    
 	
 		setUp();
 	}
 //_________________________________________PUBLIC VOID SETUP_________________________________________________________________________
 	public void setUp() throws FileNotFoundException, IOException, ParseException {
+		
 
 		Lire lire = new Lire();
 	//	Vision vision= new Vision();
@@ -76,6 +67,11 @@ public class MyFrame extends JFrame {
 
 		// On lit les entrees
 		
+		JPanels w = new JPanels("Entrées", lire.ListeDesEntrees(fichier));
+		JPanels ct = new JPanels("Plats", lire.ListeDesPlats(fichier));
+		JPanels e = new JPanels("Desserts", lire.ListeDesDesserts(fichier));
+		
+		
 		pan.add(w, BorderLayout.WEST);
 		pan.add(ct, BorderLayout.CENTER);
 		pan.add(e, BorderLayout.EAST);
@@ -83,9 +79,27 @@ public class MyFrame extends JFrame {
 		
 		//_________________________________________PARTIE SUD__________________________________________________________________
 		
-		a= recap(w,entrees);//recap(JPanels w, JLabel texte)
-		b= recap(ct,plat);
-		d=recap(e,dessert);
+//		a= recap(w,entrees);				//recap(JPanels w, JLabel texte)
+//		b= recap(ct,plat);
+//		d=recap(e,dessert);
+//		
+//		(ArrayList<Integer>) data[0];
+//		convertHashMapToPlatList(a);
+//		convertHashMapToPlatList(b);
+//		convertHashMapToPlatList(d);
+		
+		
+
+		Object[] data = recap(w,entrees);
+		HashMap<String, Integer> a = (HashMap<String,Integer>) data[1];
+		ArrayList<Plat> entreesChoisies = (ArrayList<Plat>) data[0];
+		Object[] data2 = recap(ct,plat);
+		HashMap<String, Integer> b = (HashMap<String,Integer>) data2[1];
+		ArrayList<Plat> platsChoisis = (ArrayList<Plat>) data2[0];
+		Object[] data3 = recap(e,dessert);
+		HashMap<String, Integer> d = (HashMap<String,Integer>) data3[1];
+		ArrayList<Plat> dessertsChoisis = (ArrayList<Plat>) data3[0];
+
 	
 				JPanel panelBouton= new JPanel();
 				
@@ -94,26 +108,22 @@ public class MyFrame extends JFrame {
 				
 				JButton s = new JButton("annuler");//permet de tout annuler
 				s.addActionListener(l -> {
-					entrees.setText(" ");
-					plat.setText(" ");
-					dessert.setText(" ");
-					a.clear();
-					b.clear();
-					d.clear();
+					entrees.setText(" ");plat.setText(" ");dessert.setText(" ");
+					a.clear();b.clear();d.clear();
+					entreesChoisies.clear();platsChoisis.clear();dessertsChoisis.clear();
 				});
-			
+	
+				System.out.println("IMPORTANTTTTTTTTT"+entreesChoisies);
 
+				Json json= new Json(entreesChoisies,platsChoisis, dessertsChoisis);//c'est w.getListPlat()
 				JButton com= new JButton("commander");//COMMANDE
 				com.addActionListener(l ->{
-					json.genererEntree();
-					json.genererPlat();
-					json.genererDessert();//Sur le jason qui contient l'arrayList des entreesChoisie on exécute genererJson;
+					json.setUp();//Sur le jason qui contient l'arrayList des entreesChoisie on exécute genererJson;
 					
 				});
 				panelBouton.add(s);
 				panelBouton.add(com);
 				
-
 
 				panelSud.add(panelBouton, BorderLayout.CENTER);
 				boutonSupp(entrees," les entrees",a,entreesChoisies);//C'est les 3 boutons pour supprimer les entrées, ou les plats ou les desserts
@@ -144,7 +154,7 @@ public class MyFrame extends JFrame {
 		setLocationRelativeTo(null);
 		// Affichage
 		setVisible(true);
-		System.out.println("menu: "+w.getListPlat());
+		
 
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // quand on ferme la fenêtre (le cadre), on ferme aussi
 																// le programme
@@ -153,18 +163,25 @@ public class MyFrame extends JFrame {
 //______________________________________________________________________________________________________________________________________
 
 	}
-	public HashMap<String, Integer> recap(JPanels w, JLabel texte) {
+	public static Object[] recap(JPanels wst, JLabel texte) {
 		HashMap<String, Integer> sauveMoi = new HashMap<String, Integer>();
+		ArrayList<Plat> listPlat = new ArrayList<Plat>();
+		Object[] result = new Object[2];
+		
+		for (JButtons b : wst.getListB()) {
+			System.out.println("menuuu:-3 "+listPlat);
 
-		for (JButtons b : w.getListB()) {
 
-			b.addActionListener(ef -> {// on ajoute une action au bouton b
+			b.addActionListener(l -> {// on ajoute une action au bouton b
+				System.out.println("ActionListener called");
 				 String nom = b.getP().getDescription();
 	                if (sauveMoi.containsKey(nom)) {
 	                    sauveMoi.put(nom, sauveMoi.get(nom) + 1);
 	                } else {
 	                    sauveMoi.put(nom, 1);
 	                }
+					System.out.println("menuuu: -2"+listPlat);
+
 
 				// Parcours de la HashMap pour la convertir en chaîne de caractères
 				StringBuilder sb = new StringBuilder();
@@ -172,16 +189,26 @@ public class MyFrame extends JFrame {
 				    sb.append(key).append(" : ").append(sauveMoi.get(key)).append("_");
 				}
 
+
 				// Définition du texte du JLabel avec la chaîne de caractères obtenue
 				texte.setText(""+sb.toString());
 				//texte.setText(sb.toString());
-			});
-		}
-		return sauveMoi;
+				
+			//On crée un nouveau plat avec pour nom et id ce qu'y a écrit dans jb
+						Plat entree = b.getP();//jb c'est un bouton et getP renvoie le plat contenu dans jb
+						entree.setQtt(1);//On modifie la qtt
+						listPlat.add(entree);
+						
+						System.out.println("menuuu: "+listPlat);
+						
+					});}
+		    result[0] = listPlat;
+		    result[1] = sauveMoi;
+		
+		return result;
 	}
 
-
-//______________________________________________________________________________________________________________________________________
+//__________________________________________________________________________________________________________________________________
 //______________________________________________________________________________________________________________________________________
 
 
@@ -195,9 +222,6 @@ public class MyFrame extends JFrame {
 				arraylist.clear();
 		entree.setText(" ");//efface le texte qu'il y a dans le JLabel ( dans le JLabel entree par ex)
 		
-	
-		
-	
 	
 	});
 	e.setMaximumSize(new Dimension(170,50));

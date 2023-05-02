@@ -52,16 +52,6 @@ public class JPanels extends JPanel {
 			jp2.add(b);//Chaque Plat 'a' cree une nouvelle case dans ma grille (dans laquelle il exécute 'getDescription' qui donne le nom du plat)
 			listB.add(b);
 		}
-		for(JButtons jb: listB) {//ON REMPLI UNE ARRAYLIST QUAND ON CLIQUE SUR DES BOUTONS DE PLAT
-			jb.addActionListener(l ->{
-	
-				//On crée un nouveau plat avec pour nom et id ce qu'y a écrit dans jb
-				Plat entree = jb.getP();//jb c'est un bouton et getP renvoie le plat contenu dans jb
-				entree.setQtt(1);//On modifie la qtt
-				listPlat.add(entree);
-				
-				System.out.println("menu22: "+listPlat);
-			});}
 		
 		
 		
